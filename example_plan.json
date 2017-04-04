@@ -1,0 +1,195 @@
+{
+  "opNodes": [
+    {
+      "nodeId": 1,
+      "successors": [
+        2
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "MAP",
+      "opIds": [
+        5
+      ]
+    },
+    {
+      "nodeId": 2,
+      "successors": [
+        3
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "JOIN",
+      "opIds": [
+        9,
+        10
+      ]
+    },
+    {
+      "nodeId": 3,
+      "successors": [
+        4
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "SEND_TO",
+      "opIds": [
+        11
+      ]
+    },
+    {
+      "nodeId": 6,
+      "successors": [
+        7
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "FILTER",
+      "opIds": [
+        3
+      ]
+    },
+    {
+      "nodeId": 7,
+      "successors": [
+        0
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "PARTITION_BY",
+      "opIds": [
+        4
+      ]
+    },
+    {
+      "nodeId": 9,
+      "successors": [
+        10
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "MAP",
+      "opIds": [
+        0
+      ]
+    },
+    {
+      "nodeId": 10,
+      "successors": [
+        11
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "JOIN",
+      "opIds": [
+        6,
+        7
+      ]
+    },
+    {
+      "nodeId": 11,
+      "successors": [
+        12
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "SEND_TO",
+      "opIds": [
+        8
+      ]
+    },
+    {
+      "nodeId": 14,
+      "successors": [
+        15
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "PARTITION_BY",
+      "opIds": [
+        1
+      ]
+    },
+    {
+      "nodeId": 16,
+      "successors": [
+        2,
+        10
+      ],
+      "jobName": "test-app",
+      "jobId": "1",
+      "opName": "FILTER",
+      "opIds": [
+        2
+      ]
+    }
+  ],
+  "streamNodes": [
+    {
+      "nodeId": 0,
+      "successors": [
+        1
+      ],
+      "streamId": "test-app-1-partition_by-4",
+      "system": "test-system",
+      "physicalName": "test-app-1-partition_by-4",
+      "partition": 64
+    },
+    {
+      "nodeId": 4,
+      "successors": [],
+      "streamId": "output2",
+      "system": "system2",
+      "physicalName": "output2",
+      "partition": 16
+    },
+    {
+      "nodeId": 5,
+      "successors": [
+        6
+      ],
+      "streamId": "input3",
+      "system": "system2",
+      "physicalName": "input3",
+      "partition": 32
+    },
+    {
+      "nodeId": 8,
+      "successors": [
+        9
+      ],
+      "streamId": "input1",
+      "system": "system1",
+      "physicalName": "input1",
+      "partition": 64
+    },
+    {
+      "nodeId": 12,
+      "successors": [],
+      "streamId": "output1",
+      "system": "system1",
+      "physicalName": "output1",
+      "partition": 8
+    },
+    {
+      "nodeId": 13,
+      "successors": [
+        14
+      ],
+      "streamId": "input2",
+      "system": "system2",
+      "physicalName": "input2",
+      "partition": 16
+    },
+    {
+      "nodeId": 15,
+      "successors": [
+        16
+      ],
+      "streamId": "test-app-1-partition_by-1",
+      "system": "test-system",
+      "physicalName": "test-app-1-partition_by-1",
+      "partition": 64
+    }
+  ]
+}
