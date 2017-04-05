@@ -1,130 +1,116 @@
 {
-  "opNodes": [
+  "jobs": [
     {
-      "nodeId": 1,
-      "successors": [
-        2
-      ],
       "jobName": "test-app",
       "jobId": "1",
-      "opName": "MAP",
-      "opIds": [
-        5
-      ]
-    },
-    {
-      "nodeId": 2,
-      "successors": [
-        3
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "JOIN",
-      "opIds": [
-        9,
-        10
-      ]
-    },
-    {
-      "nodeId": 3,
-      "successors": [
-        4
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "SEND_TO",
-      "opIds": [
-        11
-      ]
-    },
-    {
-      "nodeId": 6,
-      "successors": [
-        7
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "FILTER",
-      "opIds": [
-        3
-      ]
-    },
-    {
-      "nodeId": 7,
-      "successors": [
-        0
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "PARTITION_BY",
-      "opIds": [
-        4
-      ]
-    },
-    {
-      "nodeId": 9,
-      "successors": [
-        10
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "MAP",
-      "opIds": [
-        0
-      ]
-    },
-    {
-      "nodeId": 10,
-      "successors": [
-        11
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "JOIN",
-      "opIds": [
-        6,
-        7
-      ]
-    },
-    {
-      "nodeId": 11,
-      "successors": [
-        12
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "SEND_TO",
-      "opIds": [
-        8
-      ]
-    },
-    {
-      "nodeId": 14,
-      "successors": [
-        15
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "PARTITION_BY",
-      "opIds": [
-        1
-      ]
-    },
-    {
-      "nodeId": 16,
-      "successors": [
-        2,
-        10
-      ],
-      "jobName": "test-app",
-      "jobId": "1",
-      "opName": "FILTER",
-      "opIds": [
-        2
+      "opNodes": [
+        {
+          "nodeId": 1,
+          "successors": [
+            2
+          ],
+          "opName": "MAP",
+          "opIds": [
+            5
+          ]
+        },
+        {
+          "nodeId": 2,
+          "successors": [
+            3
+          ],
+          "opName": "JOIN",
+          "opIds": [
+            9,
+            10
+          ]
+        },
+        {
+          "nodeId": 3,
+          "successors": [
+            4
+          ],
+          "opName": "SEND_TO",
+          "opIds": [
+            11
+          ]
+        },
+        {
+          "nodeId": 6,
+          "successors": [
+            7
+          ],
+          "opName": "FILTER",
+          "opIds": [
+            3
+          ]
+        },
+        {
+          "nodeId": 7,
+          "successors": [
+            0
+          ],
+          "opName": "PARTITION_BY",
+          "opIds": [
+            4
+          ]
+        },
+        {
+          "nodeId": 9,
+          "successors": [
+            10
+          ],
+          "opName": "MAP",
+          "opIds": [
+            0
+          ]
+        },
+        {
+          "nodeId": 10,
+          "successors": [
+            11
+          ],
+          "opName": "JOIN",
+          "opIds": [
+            6,
+            7
+          ]
+        },
+        {
+          "nodeId": 11,
+          "successors": [
+            12
+          ],
+          "opName": "SEND_TO",
+          "opIds": [
+            8
+          ]
+        },
+        {
+          "nodeId": 14,
+          "successors": [
+            15
+          ],
+          "opName": "PARTITION_BY",
+          "opIds": [
+            1
+          ]
+        },
+        {
+          "nodeId": 16,
+          "successors": [
+            2,
+            10
+          ],
+          "opName": "FILTER",
+          "opIds": [
+            2
+          ]
+        }
       ]
     }
   ],
-  "streamNodes": [
+  "streams": [
     {
       "nodeId": 0,
       "successors": [
