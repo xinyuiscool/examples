@@ -4,6 +4,38 @@
       "JobName": "test-app",
       "JobId": "1",
       "OperatorGraph": {
+        "InputStreams": [
+          {
+            "NextOperatorIds": [
+              3
+            ],
+            "StreamId": "input3"
+          },
+          {
+            "NextOperatorIds": [
+              2
+            ],
+            "StreamId": "test-app-1-partition_by-1"
+          },
+          {
+            "NextOperatorIds": [
+              1
+            ],
+            "StreamId": "input2"
+          },
+          {
+            "NextOperatorIds": [
+              0
+            ],
+            "StreamId": "input1"
+          },
+          {
+            "NextOperatorIds": [
+              5
+            ],
+            "StreamId": "test-app-1-partition_by-4"
+          }
+        ],
         "Operators": {
           "0": {
             "NextOperatorIds": [
@@ -112,9 +144,6 @@
   ],
   "Streams": {
     "test-app-1-partition_by-4": {
-      "NextOperatorIds": [
-        5
-      ],
       "StreamSpec": {
         "Id": "test-app-1-partition_by-4",
         "SystemName": "default-system",
@@ -123,7 +152,6 @@
       }
     },
     "output1": {
-      "NextOperatorIds": [],
       "StreamSpec": {
         "Id": "output1",
         "SystemName": "system1",
@@ -132,7 +160,6 @@
       }
     },
     "output2": {
-      "NextOperatorIds": [],
       "StreamSpec": {
         "Id": "output2",
         "SystemName": "system2",
@@ -141,9 +168,6 @@
       }
     },
     "test-app-1-partition_by-1": {
-      "NextOperatorIds": [
-        2
-      ],
       "StreamSpec": {
         "Id": "test-app-1-partition_by-1",
         "SystemName": "default-system",
@@ -152,9 +176,6 @@
       }
     },
     "input3": {
-      "NextOperatorIds": [
-        3
-      ],
       "StreamSpec": {
         "Id": "input3",
         "SystemName": "system2",
@@ -163,9 +184,6 @@
       }
     },
     "input2": {
-      "NextOperatorIds": [
-        1
-      ],
       "StreamSpec": {
         "Id": "input2",
         "SystemName": "system2",
@@ -174,9 +192,6 @@
       }
     },
     "input1": {
-      "NextOperatorIds": [
-        0
-      ],
       "StreamSpec": {
         "Id": "input1",
         "SystemName": "system1",
