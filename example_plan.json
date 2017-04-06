@@ -1,187 +1,188 @@
 {
-  "jobs": [
+  "Jobs": [
     {
-      "jobName": "test-app",
-      "jobId": "1",
-      "opNodes": [
-        {
-          "nodeId": 1,
-          "successors": [
-            2
-          ],
-          "opCode": "MAP",
-          "opId": 5,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 2,
-          "successors": [
-            3
-          ],
-          "opCode": "JOIN",
-          "opId": 9,
-          "pairNodeId": 17
-        },
-        {
-          "nodeId": 3,
-          "successors": [
-            4
-          ],
-          "opCode": "SEND_TO",
-          "opId": 11,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 6,
-          "successors": [
-            7
-          ],
-          "opCode": "FILTER",
-          "opId": 3,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 7,
-          "successors": [
-            0
-          ],
-          "opCode": "PARTITION_BY",
-          "opId": 4,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 9,
-          "successors": [
-            10
-          ],
-          "opCode": "MAP",
-          "opId": 0,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 10,
-          "successors": [
-            11
-          ],
-          "opCode": "JOIN",
-          "opId": 6,
-          "pairNodeId": 18
-        },
-        {
-          "nodeId": 11,
-          "successors": [
-            12
-          ],
-          "opCode": "SEND_TO",
-          "opId": 8,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 14,
-          "successors": [
-            15
-          ],
-          "opCode": "PARTITION_BY",
-          "opId": 1,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 16,
-          "successors": [
-            17,
-            18
-          ],
-          "opCode": "FILTER",
-          "opId": 2,
-          "pairNodeId": -1
-        },
-        {
-          "nodeId": 17,
-          "successors": [
-            3
-          ],
-          "opCode": "JOIN",
-          "opId": 10,
-          "pairNodeId": 2
-        },
-        {
-          "nodeId": 18,
-          "successors": [
-            11
-          ],
-          "opCode": "JOIN",
-          "opId": 7,
-          "pairNodeId": 10
+      "JobName": "test-app",
+      "JobId": "1",
+      "OperatorGraph": {
+        "Operators": {
+          "0": {
+            "NextOperatorIds": [
+              6
+            ],
+            "OpCode": "MAP",
+            "OpId": 0,
+            "OutputStreamId": null,
+            "PairedOpId": -1
+          },
+          "1": {
+            "NextOperatorIds": [],
+            "OpCode": "PARTITION_BY",
+            "OpId": 1,
+            "OutputStreamId": "test-app-1-partition_by-1",
+            "PairedOpId": -1
+          },
+          "2": {
+            "NextOperatorIds": [
+              7,
+              10
+            ],
+            "OpCode": "FILTER",
+            "OpId": 2,
+            "OutputStreamId": null,
+            "PairedOpId": -1
+          },
+          "3": {
+            "NextOperatorIds": [
+              4
+            ],
+            "OpCode": "FILTER",
+            "OpId": 3,
+            "OutputStreamId": null,
+            "PairedOpId": -1
+          },
+          "4": {
+            "NextOperatorIds": [],
+            "OpCode": "PARTITION_BY",
+            "OpId": 4,
+            "OutputStreamId": "test-app-1-partition_by-4",
+            "PairedOpId": -1
+          },
+          "5": {
+            "NextOperatorIds": [
+              9
+            ],
+            "OpCode": "MAP",
+            "OpId": 5,
+            "OutputStreamId": null,
+            "PairedOpId": -1
+          },
+          "6": {
+            "NextOperatorIds": [
+              8
+            ],
+            "OpCode": "JOIN",
+            "OpId": 6,
+            "OutputStreamId": null,
+            "PairedOpId": 7
+          },
+          "7": {
+            "NextOperatorIds": [
+              8
+            ],
+            "OpCode": "JOIN",
+            "OpId": 7,
+            "OutputStreamId": null,
+            "PairedOpId": 6
+          },
+          "8": {
+            "NextOperatorIds": [],
+            "OpCode": "SEND_TO",
+            "OpId": 8,
+            "OutputStreamId": "output1",
+            "PairedOpId": -1
+          },
+          "9": {
+            "NextOperatorIds": [
+              11
+            ],
+            "OpCode": "JOIN",
+            "OpId": 9,
+            "OutputStreamId": null,
+            "PairedOpId": 10
+          },
+          "10": {
+            "NextOperatorIds": [
+              11
+            ],
+            "OpCode": "JOIN",
+            "OpId": 10,
+            "OutputStreamId": null,
+            "PairedOpId": 9
+          },
+          "11": {
+            "NextOperatorIds": [],
+            "OpCode": "SEND_TO",
+            "OpId": 11,
+            "OutputStreamId": "output2",
+            "PairedOpId": -1
+          }
         }
-      ]
+      }
     }
   ],
-  "streams": [
-    {
-      "nodeId": 0,
-      "successors": [
+  "Streams": {
+    "test-app-1-partition_by-4": {
+      "NextOperatorIds": [
+        5
+      ],
+      "StreamSpec": {
+        "Id": "test-app-1-partition_by-4",
+        "SystemName": "default-system",
+        "PhysicalName": "test-app-1-partition_by-4",
+        "PartitionCount": 64
+      }
+    },
+    "output1": {
+      "NextOperatorIds": [],
+      "StreamSpec": {
+        "Id": "output1",
+        "SystemName": "system1",
+        "PhysicalName": "output1",
+        "PartitionCount": 8
+      }
+    },
+    "output2": {
+      "NextOperatorIds": [],
+      "StreamSpec": {
+        "Id": "output2",
+        "SystemName": "system2",
+        "PhysicalName": "output2",
+        "PartitionCount": 16
+      }
+    },
+    "test-app-1-partition_by-1": {
+      "NextOperatorIds": [
+        2
+      ],
+      "StreamSpec": {
+        "Id": "test-app-1-partition_by-1",
+        "SystemName": "default-system",
+        "PhysicalName": "test-app-1-partition_by-1",
+        "PartitionCount": 64
+      }
+    },
+    "input3": {
+      "NextOperatorIds": [
+        3
+      ],
+      "StreamSpec": {
+        "Id": "input3",
+        "SystemName": "system2",
+        "PhysicalName": "input3",
+        "PartitionCount": 32
+      }
+    },
+    "input2": {
+      "NextOperatorIds": [
         1
       ],
-      "streamId": "test-app-1-partition_by-4",
-      "system": "test-system",
-      "physicalName": "test-app-1-partition_by-4",
-      "partition": 64
+      "StreamSpec": {
+        "Id": "input2",
+        "SystemName": "system2",
+        "PhysicalName": "input2",
+        "PartitionCount": 16
+      }
     },
-    {
-      "nodeId": 4,
-      "successors": [],
-      "streamId": "output2",
-      "system": "system2",
-      "physicalName": "output2",
-      "partition": 16
-    },
-    {
-      "nodeId": 5,
-      "successors": [
-        6
+    "input1": {
+      "NextOperatorIds": [
+        0
       ],
-      "streamId": "input3",
-      "system": "system2",
-      "physicalName": "input3",
-      "partition": 32
-    },
-    {
-      "nodeId": 8,
-      "successors": [
-        9
-      ],
-      "streamId": "input1",
-      "system": "system1",
-      "physicalName": "input1",
-      "partition": 64
-    },
-    {
-      "nodeId": 12,
-      "successors": [],
-      "streamId": "output1",
-      "system": "system1",
-      "physicalName": "output1",
-      "partition": 8
-    },
-    {
-      "nodeId": 13,
-      "successors": [
-        14
-      ],
-      "streamId": "input2",
-      "system": "system2",
-      "physicalName": "input2",
-      "partition": 16
-    },
-    {
-      "nodeId": 15,
-      "successors": [
-        16
-      ],
-      "streamId": "test-app-1-partition_by-1",
-      "system": "test-system",
-      "physicalName": "test-app-1-partition_by-1",
-      "partition": 64
+      "StreamSpec": {
+        "Id": "input1",
+        "SystemName": "system1",
+        "PhysicalName": "input1",
+        "PartitionCount": 64
+      }
     }
-  ]
+  }
 }
