@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.apache.samza.test.integration;
 
 import java.io.IOException;
@@ -13,6 +32,7 @@ import org.apache.samza.config.MapConfig;
 import org.apache.samza.config.ZkConfig;
 import org.apache.samza.operators.StreamGraph;
 import org.apache.samza.runtime.LocalApplicationRunner;
+import org.apache.samza.runtime.UUIDGenerator;
 import org.apache.samza.zk.ZkCoordinationServiceFactory;
 import org.apache.zookeeper.server.ServerConfig;
 import org.apache.zookeeper.server.ZooKeeperServerMain;
@@ -30,8 +50,8 @@ public class TestZkLocalApplicationRunner {
     Map<String, String> configs = new HashMap<>();
 
     // create internal system
-    configs.put("systems.queuing.samza.factory","org.apache.samza.system.kafka.KafkaSystemFactory");
-    configs.put("systems.queuing.producer.bootstrap.servers","ltx1-kafka-kafka-queuing-vip.stg.linkedin.com:10251");
+    configs.put("systems.queuing.samza.factory", "org.apache.samza.system.kafka.KafkaSystemFactory");
+    configs.put("systems.queuing.producer.bootstrap.servers", "ltx1-kafka-kafka-queuing-vip.stg.linkedin.com:10251");
     configs.put("systems.queuing.consumer.zookeeper.connect", "zk-ltx1-kafka.stg.linkedin.com:12913/kafka-queuing");
     configs.put("systems.queuing.samza.key.serde", "string");
     configs.put("systems.queuing.samza.msg.serde", "string");
@@ -57,6 +77,7 @@ public class TestZkLocalApplicationRunner {
 
     // app
     configs.put(ApplicationConfig.APP_COORDINATION_SERVICE_FACTORY_CLASS, ZkCoordinationServiceFactory.class.getName());
+    configs.put(ApplicationConfig.APP_PROCESSOR_ID_GENERATOR_CLASS, UUIDGenerator.class.getName());
 
     return configs;
   }
@@ -88,7 +109,6 @@ public class TestZkLocalApplicationRunner {
 
     try {
       Map<String, String> config = new HashMap<>(test.createConfigs());
-      config.put("processor.id", "0");
       LocalApplicationRunner runner = new LocalApplicationRunner(new MapConfig(config));
       runner.run(streamApp);
 
@@ -115,13 +135,13 @@ public class TestZkLocalApplicationRunner {
     //the directory where the snapshot is stored.
     startupProperties.put("dataDir", "/tmp/zookeeper");
     //the port at which the clients will connect
-    startupProperties.put("clientPort","2182");
+    startupProperties.put("clientPort", "2182");
 
 
     QuorumPeerConfig quorumConfiguration = new QuorumPeerConfig();
     try {
       quorumConfiguration.parseProperties(startupProperties);
-    } catch(Exception e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
