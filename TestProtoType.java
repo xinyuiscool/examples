@@ -98,5 +98,7 @@ public class TestProtoType {
         "1", "PageView1",
         "2", "PageView2"
     ));
+    
+    app.run();
   }
 }
