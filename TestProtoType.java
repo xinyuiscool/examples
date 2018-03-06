@@ -63,6 +63,9 @@ public class TestProtoType {
     }
   }
 
+  /**
+   * An example of high-level api job test
+   */
   public static void testHighLevelApi() {
     TestApplication.AppTest app = TestApplication.create(new MapConfig());
     CollectionStream<String> input1 = CollectionStream.of("1", "2", "4");
@@ -74,6 +77,9 @@ public class TestProtoType {
     app.run();
   }
 
+  /**
+   * An example of low-level api job test
+   */  
   public static void testLowLevelApi() {
     StreamTask task = new StreamTask() {
       @Override
