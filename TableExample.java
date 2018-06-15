@@ -62,7 +62,7 @@ public class TableExample {
                 .withDb("isb")
                 .withTable("profile"));
 
-    // A pipeline consumes Kafka PageViewEvent and look up the internal settings
+    // A pipeline consumes Kafka PageViewEvent and look up the both tables
     pipeline
         .apply(LiKafkaIO.<PageViewEvent>read()
             .withTopic("PageViewEvent")
