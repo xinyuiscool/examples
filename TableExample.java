@@ -30,7 +30,7 @@ import static com.linkedin.beam.io.LiKafkaIOConfig.ClusterName.TRACKING;
 public class TableExample {
 
   public static void main(String[] args) {
-    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("identity-example");
+    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("table-example");
     final LiKafkaIOConfig kafkaConfig = ConfigForExamples.getLiKafkaIOConfig();
     final BrooklinIOConfig brooklinConfig = ConfigForExamples.getBrooklinIOConfig();
     final Pipeline pipeline = Pipeline.create(pipelineOpts);
