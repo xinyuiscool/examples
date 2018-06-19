@@ -1,9 +1,11 @@
 package com.linkedin.beam.examples;
 
 import com.linkedin.beam.examples.config.ConfigForExamples;
-import com.linkedin.beam.examples.kvtable.KVTable;
-import com.linkedin.beam.examples.kvtable.PCollectionTable;
-import com.linkedin.beam.examples.kvtable.TableContext;
+import com.linkedin.beam.values.PCollectionRWTable;
+import com.linkedin.beam.values.ROTable;
+import com.linkedin.beam.values.PCollectionROTable;
+import com.linkedin.beam.values.RWTable;
+import com.linkedin.beam.values.TableContext;
 import com.linkedin.beam.io.BrooklinIO;
 import com.linkedin.beam.io.BrooklinIOConfig;
 import com.linkedin.beam.io.LiKafkaIO;
@@ -30,7 +32,7 @@ import static com.linkedin.beam.io.LiKafkaIOConfig.ClusterName.TRACKING;
 public class TableExample {
 
   public static void main(String[] args) {
-    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("table-example");
+    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("identity-example");
     final LiKafkaIOConfig kafkaConfig = ConfigForExamples.getLiKafkaIOConfig();
     final BrooklinIOConfig brooklinConfig = ConfigForExamples.getBrooklinIOConfig();
     final Pipeline pipeline = Pipeline.create(pipelineOpts);
@@ -48,21 +50,21 @@ public class TableExample {
             .of(setting -> setting.getMemberId().toString()));
 
     //Local Table
-    final PCollectionTable<KV<String, InternalSetting>> settingsTable =
+    final PCollectionRWTable<KV<String, InternalSetting>> settingsTable =
         internalSettings.apply(
-            RocksDbTable.write()
+            RocksDbTable.readWrite()
                 .withName("internalSettings")
                 .withKeyCoder(StringUtf8Coder.of())
                 .withValueCoder(AvroCoder.of(PageViewEvent.class)));
 
     // Remote Table
-    final PCollectionTable<KV<String, Profile>> profileTable =
+    final PCollectionROTable<KV<String, Profile>> profileTable =
         pipeline.apply(
-            EspressoTable.read()
+            EspressoTable.readOnly()
                 .withDb("isb")
                 .withTable("profile"));
 
-    // A pipeline consumes Kafka PageViewEvent and look up both tables
+    // A pipeline consumes Kafka PageViewEvent and look up the internal settings
     pipeline
         .apply(LiKafkaIO.<PageViewEvent>read()
             .withTopic("PageViewEvent")
@@ -75,17 +77,15 @@ public class TableExample {
               public void processElement(ProcessContext c,
                                          @TableContext.Inject TableContext tc) {
 
-                KVTable<String, InternalSetting> settings = tc.getTable(settingsTable);
-                KVTable<String, Profile> profile = tc.getTable(profileTable);
+                RWTable<String, InternalSetting> settings = tc.getTable(settingsTable);
+                ROTable<String, Profile> profile = tc.getTable(profileTable);
 
                 PageViewEvent pv = c.element().getValue();
                 String memberId = String.valueOf(pv.header.memberId);
-                
                 //table lookup
                 InternalSetting is = settings.get(memberId);
                 Profile p = profile.get(memberId);
-                
-                // do something else ...
+                // do something ...
               }
         }));
   }
