@@ -1,10 +1,13 @@
 package com.linkedin.beam.examples;
 
 import com.linkedin.beam.examples.config.ConfigForExamples;
-import com.linkedin.beam.values.PCollectionRWTable;
+import com.linkedin.beam.values.CoGroupWithTable;
+import com.linkedin.beam.values.PCollectionWithTable;
+import com.linkedin.beam.values.PTable;
 import com.linkedin.beam.values.ROTable;
-import com.linkedin.beam.values.PCollectionROTable;
+import com.linkedin.beam.values.PReadOnlyTable;
 import com.linkedin.beam.values.RWTable;
+import com.linkedin.beam.values.PCollectionTableJoin;
 import com.linkedin.beam.values.TableContext;
 import com.linkedin.beam.io.BrooklinIO;
 import com.linkedin.beam.io.BrooklinIOConfig;
@@ -22,8 +25,13 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.Values;
 import org.apache.beam.sdk.transforms.WithKeys;
+import org.apache.beam.sdk.transforms.join.CoGbkResult;
+import org.apache.beam.sdk.transforms.join.CoGroupByKey;
+import org.apache.beam.sdk.transforms.join.KeyedPCollectionTuple;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.TupleTag;
+import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Instant;
 
 import static com.linkedin.beam.io.BrooklinIO.ESPRESSO;
@@ -49,44 +57,57 @@ public class TableExample {
         .apply(WithKeys
             .of(setting -> setting.getMemberId().toString()));
 
-    //Local Table
-    final PCollectionRWTable<KV<String, InternalSetting>> settingsTable =
-        internalSettings.apply(
-            RocksDbTable.readWrite()
-                .withName("internalSettings")
-                .withKeyCoder(StringUtf8Coder.of())
-                .withValueCoder(AvroCoder.of(PageViewEvent.class)));
 
     // Remote Table
-    final PCollectionROTable<KV<String, Profile>> profileTable =
+    final PReadOnlyTable<KV<String, Profile>> profileTable =
         pipeline.apply(
             EspressoTable.readOnly()
                 .withDb("isb")
                 .withTable("profile"));
 
     // A pipeline consumes Kafka PageViewEvent and look up the internal settings
-    pipeline
+    PCollection<KV<String, PageViewEvent>> pageView = pipeline
         .apply(LiKafkaIO.<PageViewEvent>read()
             .withTopic("PageViewEvent")
             .withConsumerConfig(kafkaConfig.getConsumerConfig(TRACKING))
-            .withoutMetadata())
-        .apply(ParDo.of(
-            new DoFn<KV<String, PageViewEvent>, Void>() {
+            .withoutMetadata());
 
-              @ProcessElement
-              public void processElement(ProcessContext c,
-                                         @TableContext.Inject TableContext tc) {
+    //Local Table
+    final PTable<KV<String, InternalSetting>> settingsTable =
+        pipeline.apply(
+            RocksDbTable.readWrite()
+                .withName("internalSettings")
+                .withKeyCoder(StringUtf8Coder.of())
+                .withValueCoder(AvroCoder.of(PageViewEvent.class))
+                .withInput(internalSettings));
 
-                RWTable<String, InternalSetting> settings = tc.getTable(settingsTable);
-                ROTable<String, Profile> profile = tc.getTable(profileTable);
+    pageView
+        .apply(CoGroupByTable.of(settingsTable))
+        .apply(ParDo
+            .of(
+                new DoFn<KV<String, PageViewEvent>, String>() {
+                  @ProcessElement
+                  public void processElement(ProcessContext c,
+                                             @TableContext.Inject TableContext tc) {
 
-                PageViewEvent pv = c.element().getValue();
-                String memberId = String.valueOf(pv.header.memberId);
-                //table lookup
-                InternalSetting is = settings.get(memberId);
-                Profile p = profile.get(memberId);
-                // do something ...
-              }
-        }));
+                    RWTable<String, InternalSetting> settings = tc.getTable(settingsTable);
+                    ROTable<String, Profile> profile = tc.getTable(profileTable);
+
+                    PageViewEvent pv = c.element().getValue();
+                    String memberId = c.element().getKey();
+
+                    //table lookup
+                    InternalSetting is = settings.get(memberId);
+                    Profile p = profile.get(memberId);
+
+                    // do something ...
+                    c.output(is.getName().toString());
+                  }
+                }));
+
+    // Use the convenient helper class to do the same thing
+    PCollection<String> result = PCollectionTableJoin.of(pageView, settingsTable)
+        .into(TypeDescriptors.strings())
+        .via((pv, setting) -> setting.getName().toString());
   }
 }
