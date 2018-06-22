@@ -40,7 +40,7 @@ import static com.linkedin.beam.io.LiKafkaIOConfig.ClusterName.TRACKING;
 public class TableExample {
 
   public static void main(String[] args) {
-    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("identity-example");
+    final SamzaPipelineOptions pipelineOpts = ConfigForExamples.getSamzaPipelineOptions("table-example");
     final LiKafkaIOConfig kafkaConfig = ConfigForExamples.getLiKafkaIOConfig();
     final BrooklinIOConfig brooklinConfig = ConfigForExamples.getBrooklinIOConfig();
     final Pipeline pipeline = Pipeline.create(pipelineOpts);
@@ -57,22 +57,7 @@ public class TableExample {
         .apply(WithKeys
             .of(setting -> setting.getMemberId().toString()));
 
-
-    // Remote Table
-    final PReadOnlyTable<KV<String, Profile>> profileTable =
-        pipeline.apply(
-            EspressoTable.readOnly()
-                .withDb("isb")
-                .withTable("profile"));
-
-    // A pipeline consumes Kafka PageViewEvent and look up the internal settings
-    PCollection<KV<String, PageViewEvent>> pageView = pipeline
-        .apply(LiKafkaIO.<PageViewEvent>read()
-            .withTopic("PageViewEvent")
-            .withConsumerConfig(kafkaConfig.getConsumerConfig(TRACKING))
-            .withoutMetadata());
-
-    //Local Table
+    //Local RocksDb Table
     final PTable<KV<String, InternalSetting>> settingsTable =
         pipeline.apply(
             RocksDbTable.readWrite()
@@ -81,6 +66,21 @@ public class TableExample {
                 .withValueCoder(AvroCoder.of(PageViewEvent.class))
                 .withInput(internalSettings));
 
+    // Remote Db Table
+    final PReadOnlyTable<KV<String, Profile>> profileTable =
+        pipeline.apply(
+            EspressoTable.readOnly()
+                .withDb("isb")
+                .withTable("profile"));
+
+    // main input
+    PCollection<KV<String, PageViewEvent>> pageView = pipeline
+        .apply(LiKafkaIO.<PageViewEvent>read()
+            .withTopic("PageViewEvent")
+            .withConsumerConfig(kafkaConfig.getConsumerConfig(TRACKING))
+            .withoutMetadata());
+
+    // main input process with table
     pageView
         .apply(CoGroupByTable.of(settingsTable))
         .apply(ParDo
