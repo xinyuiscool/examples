@@ -82,28 +82,21 @@ public class TableExample {
 
     // main input process with table
     pageView
-        .apply(CoGroupByTable.of(settingsTable))
-        .apply(ParDo
+        .apply(TableParDo
             .of(
                 new DoFn<KV<String, PageViewEvent>, String>() {
                   @ProcessElement
                   public void processElement(ProcessContext c,
                                              @TableContext.Inject TableContext tc) {
-
-                    RWTable<String, InternalSetting> settings = tc.getTable(settingsTable);
-                    ROTable<String, Profile> profile = tc.getTable(profileTable);
-
-                    PageViewEvent pv = c.element().getValue();
                     String memberId = c.element().getKey();
 
                     //table lookup
+                    RWTable<String, InternalSetting> settings = tc.getTable(settingsTable);
                     InternalSetting is = settings.get(memberId);
-                    Profile p = profile.get(memberId);
-
-                    // do something ...
                     c.output(is.getName().toString());
                   }
-                }));
+                })
+            .withTables(settingsTable));
 
     // Use the convenient helper class to do the same thing
     PCollection<String> result = PCollectionTableJoin.of(pageView, settingsTable)
