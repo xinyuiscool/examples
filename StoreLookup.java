@@ -76,9 +76,11 @@ public class StoreLookup<KS, VS, VT>
     PipelineOptions options = PipelineOptionsFactory.fromArgs(args).create();
     Pipeline pipeline = Pipeline.create(options);
 
+    // dummy main input
     PCollection<KV<Integer, String>> input = pipeline.apply(Create.of(KV.of(1, "a")));
+    // store config
     Map<String, String> storeConfig = ImmutableMap.of("connect.url", "127.0.0.1");
-
+    // look up store based on the input key
     PCollection<KV<Integer, KV<String, String>>> output = input.apply(StoreLookup.of(storeConfig));
     
     pipeline.run().waitUntilFinish();
