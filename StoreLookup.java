@@ -80,5 +80,7 @@ public class StoreLookup<KS, VS, VT>
     Map<String, String> storeConfig = ImmutableMap.of("connect.url", "127.0.0.1");
 
     PCollection<KV<Integer, KV<String, String>>> output = input.apply(StoreLookup.of(storeConfig));
+    
+    pipeline.run().waitUntilFinish();
   }
 }
